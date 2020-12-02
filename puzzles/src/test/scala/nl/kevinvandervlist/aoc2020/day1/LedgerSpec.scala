@@ -17,25 +17,20 @@ class LedgerSpec extends AnyWordSpec with Matchers {
 
   private val input = Source.fromResource("day-1-input").getLines().toList
 
-  "A small ledger: 2" should {
-    "compute the right totals" in {
+  "Part 1" should {
+    "validate example" in {
       Ledger.fromStringsTwo(example.split('\n').toList) shouldBe BigInt(514579)
     }
-  }
-  "A large ledger: 2" should {
-    "compute the result" in {
+    "validate assignment" in {
       Ledger.fromStringsTwo(input) shouldBe BigInt(567171)
     }
   }
 
-  "A small ledger: 3" should {
-    "compute the right totals" in {
+  "Part 2" should {
+    "validate example" in {
       Ledger.fromStringsThree(example.split('\n').toList) shouldBe BigInt(241861950)
     }
-  }
-  "A large ledger: 3" should {
-    "compute the result" in {
-      val input = Source.fromResource("day-1-input").getLines().toList
+    "validate assignment" in {
       Ledger.fromStringsThree(input) shouldBe BigInt(212428694)
     }
   }
