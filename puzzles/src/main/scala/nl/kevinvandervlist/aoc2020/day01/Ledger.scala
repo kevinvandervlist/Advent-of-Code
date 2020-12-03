@@ -1,4 +1,4 @@
-package nl.kevinvandervlist.aoc2020.day1
+package nl.kevinvandervlist.aoc2020.day01
 
 object Ledger {
   val goal = BigInt(2020)

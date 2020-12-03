@@ -1,4 +1,4 @@
-package nl.kevinvandervlist.aoc2020.day1
+package nl.kevinvandervlist.aoc2020.day01
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -15,7 +15,7 @@ class LedgerSpec extends AnyWordSpec with Matchers {
       |1456
       |""".stripMargin
 
-  private val input = Source.fromResource("day-1-input").getLines().toList
+  private val input = Source.fromResource("day-01-input").getLines().toList
 
   "Part 1" should {
     "validate example" in {

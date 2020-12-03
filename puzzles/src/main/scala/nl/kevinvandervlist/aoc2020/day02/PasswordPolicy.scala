@@ -1,4 +1,4 @@
-package nl.kevinvandervlist.aoc2020.day2
+package nl.kevinvandervlist.aoc2020.day02
 
 object PasswordPolicy {
 

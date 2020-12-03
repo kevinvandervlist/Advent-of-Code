@@ -1,4 +1,4 @@
-package nl.kevinvandervlist.aoc2020.day2
+package nl.kevinvandervlist.aoc2020.day02
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -12,7 +12,7 @@ class PasswordPolicySpec extends AnyWordSpec with Matchers {
       |2-9 c: ccccccccc
       |""".stripMargin
 
-  private val input = Source.fromResource("day-2-input").getLines().toList
+  private val input = Source.fromResource("day-02-input").getLines().toList
 
   "Part 1" should {
     "validate example" in {
