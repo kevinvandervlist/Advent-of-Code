@@ -1,12 +1,9 @@
 package nl.kevinvandervlist.aoc2020.day07
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import nl.kevinvandervlist.aoc.AoCSpec
 
-import scala.io.Source
-
-class LuggageProcessingSpec extends AnyWordSpec with Matchers {
-  private val example =
+class LuggageProcessingSpec extends AoCSpec {
+  override def example: String =
     """light red bags contain 1 bright white bag, 2 muted yellow bags.
       |dark orange bags contain 3 bright white bags, 4 muted yellow bags.
       |bright white bags contain 1 shiny gold bag.
@@ -18,33 +15,27 @@ class LuggageProcessingSpec extends AnyWordSpec with Matchers {
       |dotted black bags contain no other bags.
       |""".stripMargin
 
-  private val input = Source.fromResource("day-07-input").getLines().toList
+  def example2: String =
+    """shiny gold bags contain 2 dark red bags.
+      |dark red bags contain 2 dark orange bags.
+      |dark orange bags contain 2 dark yellow bags.
+      |dark yellow bags contain 2 dark green bags.
+      |dark green bags contain 2 dark blue bags.
+      |dark blue bags contain 2 dark violet bags.
+      |dark violet bags contain no other bags.
+      |""".stripMargin
 
-  "Part 1" should {
-    "validate example" in {
-      LuggageProcessing.one(example.split('\n').toList) shouldBe 4
-    }
-    "validate assignment" in {
-      LuggageProcessing.one(input) shouldBe 112
-    }
+  override def examplePartOne(): Any =
+    LuggageProcessing.one(exampleAsLines) shouldBe 4
+
+  override def assignmentPartOne(): Any =
+    LuggageProcessing.one(inputAsLines) shouldBe 112
+
+  override def examplePartTwo(): Any = {
+    LuggageProcessing.two(exampleAsLines) shouldBe 32
+    LuggageProcessing.two(example2.split('\n').toList) shouldBe 126
   }
 
-  "Part 2" should {
-    "validate example" in {
-      val example2 =
-        """shiny gold bags contain 2 dark red bags.
-          |dark red bags contain 2 dark orange bags.
-          |dark orange bags contain 2 dark yellow bags.
-          |dark yellow bags contain 2 dark green bags.
-          |dark green bags contain 2 dark blue bags.
-          |dark blue bags contain 2 dark violet bags.
-          |dark violet bags contain no other bags.
-          |""".stripMargin
-      LuggageProcessing.two(example.split('\n').toList) shouldBe 32
-      LuggageProcessing.two(example2.split('\n').toList) shouldBe 126
-    }
-    "validate assignment" in {
-      LuggageProcessing.two(input) shouldBe 6260
-    }
-  }
+  override def assignmentPartTwo(): Any =
+    LuggageProcessing.two(inputAsLines) shouldBe 6260
 }

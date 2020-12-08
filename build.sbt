@@ -19,13 +19,21 @@ lazy val commonSettings = Seq(
   )
 )
 
+lazy val core = (project in file("core")).
+  settings(commonSettings: _*).
+  settings(
+    name := "core",
+    libraryDependencies ++= Seq(
+    ),
+  )
+
 lazy val y2015 = (project in file("y2015")).
   settings(commonSettings: _*).
   settings(
     name := "y2015",
     libraryDependencies ++= Seq(
     ),
-  )
+  ).dependsOn(core)
 
 lazy val y2016 = (project in file("y2016")).
   settings(commonSettings: _*).
@@ -33,7 +41,7 @@ lazy val y2016 = (project in file("y2016")).
     name := "y2016",
     libraryDependencies ++= Seq(
     ),
-  )
+  ).dependsOn(core)
 
 lazy val y2017 = (project in file("y2017")).
   settings(commonSettings: _*).
@@ -41,7 +49,7 @@ lazy val y2017 = (project in file("y2017")).
     name := "y2017",
     libraryDependencies ++= Seq(
     ),
-  )
+  ).dependsOn(core)
 
 lazy val y2018 = (project in file("y2018")).
   settings(commonSettings: _*).
@@ -49,7 +57,7 @@ lazy val y2018 = (project in file("y2018")).
     name := "y2018",
     libraryDependencies ++= Seq(
     ),
-  )
+  ).dependsOn(core)
 
 lazy val y2019 = (project in file("y2019")).
   settings(commonSettings: _*).
@@ -57,7 +65,7 @@ lazy val y2019 = (project in file("y2019")).
     name := "y2019",
     libraryDependencies ++= Seq(
     ),
-  )
+  ).dependsOn(core)
 
 lazy val y2020 = (project in file("y2020")).
   settings(commonSettings: _*).
@@ -65,4 +73,4 @@ lazy val y2020 = (project in file("y2020")).
     name := "y2020",
     libraryDependencies ++= Seq(
     ),
-  )
+  ).dependsOn(core)

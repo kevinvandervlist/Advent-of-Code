@@ -1,33 +1,21 @@
 package nl.kevinvandervlist.aoc2017.day01
 
-import nl.kevinvandervlist.aoc2017.day01.X
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import nl.kevinvandervlist.aoc.AoCSpec
 
-import scala.io.Source
-
-class XSpec extends AnyWordSpec with Matchers {
-  private val example =
+class XSpec extends AoCSpec {
+  override def example: String =
     """
       |""".stripMargin
 
-  private val input = Source.fromResource("day-01-input").getLines().toList
+  override def examplePartOne(): Any =
+    X.one(exampleAsLines) shouldBe -1
 
-  "Part 1" should {
-    "validate example" in {
-      X.one(example.split('\n').toList) shouldBe -1
-    }
-    "validate assignment" in {
-      X.one(input) shouldBe -1
-    }
-  }
+  override def assignmentPartOne(): Any =
+    X.one(inputAsLines) shouldBe -1
 
-  "Part 2" should {
-    "validate example" in {
-      X.one(example.split('\n').toList) shouldBe -1
-    }
-    "validate assignment" in {
-      X.one(input) shouldBe -1
-    }
-  }
+  override def examplePartTwo(): Any =
+    X.two(exampleAsLines) shouldBe -1
+
+  override def assignmentPartTwo(): Any =
+    X.two(inputAsLines) shouldBe -1
 }

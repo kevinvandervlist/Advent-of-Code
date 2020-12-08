@@ -1,4 +1,4 @@
-package nl.kevinvandervlist.aoc2018.day01
+package nl.kevinvandervlist.aoc2020.day09
 
 import nl.kevinvandervlist.aoc.AoCSpec
 

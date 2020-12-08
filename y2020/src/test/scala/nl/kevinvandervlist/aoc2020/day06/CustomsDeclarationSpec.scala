@@ -1,12 +1,9 @@
 package nl.kevinvandervlist.aoc2020.day06
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import nl.kevinvandervlist.aoc.AoCSpec
 
-import scala.io.Source
-
-class CustomsDeclarationSpec extends AnyWordSpec with Matchers {
-  private val example =
+class CustomsDeclarationSpec extends AoCSpec {
+  override def example: String =
     """abc
       |
       |a
@@ -24,23 +21,15 @@ class CustomsDeclarationSpec extends AnyWordSpec with Matchers {
       |b
       |""".stripMargin
 
-  private val input = Source.fromResource("day-06-input").getLines().toList
+  override def examplePartOne(): Any =
+    CustomsDeclaration.one(example) shouldBe 11
 
-  "Part 1" should {
-    "validate example" in {
-      CustomsDeclaration.one(example) shouldBe 11
-    }
-    "validate assignment" in {
-      CustomsDeclaration.one(input.mkString("\n")) shouldBe 6768
-    }
-  }
+  override def assignmentPartOne(): Any =
+    CustomsDeclaration.one(inputAsString) shouldBe 6768
 
-  "Part 2" should {
-    "validate example" in {
-      CustomsDeclaration.two(example) shouldBe 6
-    }
-    "validate assignment" in {
-      CustomsDeclaration.two(input.mkString("\n")) shouldBe 3489
-    }
-  }
+  override def examplePartTwo(): Any =
+    CustomsDeclaration.two(example) shouldBe 6
+
+  override def assignmentPartTwo(): Any =
+    CustomsDeclaration.two(inputAsString) shouldBe 3489
 }

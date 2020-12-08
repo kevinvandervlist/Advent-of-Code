@@ -1,12 +1,9 @@
 package nl.kevinvandervlist.aoc2020.day01
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import nl.kevinvandervlist.aoc.AoCSpec
 
-import scala.io.Source
-
-class LedgerSpec extends AnyWordSpec with Matchers {
-  private val example =
+class LedgerSpec extends AoCSpec {
+  override def example: String =
     """1721
       |979
       |366
@@ -15,23 +12,15 @@ class LedgerSpec extends AnyWordSpec with Matchers {
       |1456
       |""".stripMargin
 
-  private val input = Source.fromResource("day-01-input").getLines().toList
+  override def examplePartOne(): Any =
+    Ledger.fromStringsTwo(exampleAsLines) shouldBe BigInt(514579)
 
-  "Part 1" should {
-    "validate example" in {
-      Ledger.fromStringsTwo(example.split('\n').toList) shouldBe BigInt(514579)
-    }
-    "validate assignment" in {
-      Ledger.fromStringsTwo(input) shouldBe BigInt(567171)
-    }
-  }
+  override def assignmentPartOne(): Any =
+    Ledger.fromStringsTwo(inputAsLines) shouldBe BigInt(567171)
 
-  "Part 2" should {
-    "validate example" in {
-      Ledger.fromStringsThree(example.split('\n').toList) shouldBe BigInt(241861950)
-    }
-    "validate assignment" in {
-      Ledger.fromStringsThree(input) shouldBe BigInt(212428694)
-    }
-  }
+  override def examplePartTwo(): Any =
+    Ledger.fromStringsThree(exampleAsLines) shouldBe BigInt(241861950)
+
+  override def assignmentPartTwo(): Any =
+    Ledger.fromStringsThree(inputAsLines) shouldBe BigInt(212428694)
 }
