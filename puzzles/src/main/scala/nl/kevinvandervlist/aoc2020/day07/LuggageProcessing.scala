@@ -1,14 +1,15 @@
 package nl.kevinvandervlist.aoc2020.day07
 
-import scala.collection.mutable
+import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 
 object LuggageProcessing {
+  private val my_bag = "shiny gold"
   def one(in: List[String]): Int =
-    parseRules(in).eventuallyHoldsAtLeastOne("shiny gold")
+    parseRules(in).eventuallyHoldsAtLeastOne(my_bag)
 
   def two(in: List[String]): Int =
-    parseRules(in).numberOfBagsRequired("shiny gold")
+    parseRules(in).numberOfBagsRequired(my_bag)
 
   private def parseRules(rules: List[String]): Rules = rules.foldLeft(Rules(Map.empty)) {
     case (rules, line) =>
@@ -30,27 +31,24 @@ object LuggageProcessing {
 }
 
 private case class Rules(rel: Map[String, List[Content]]) {
-
   def numberOfBagsRequired(name: String): Int = {
-    def numBagsRec(stack: List[Content]): Int = stack match {
-      case Nil => 1
-      case head :: tail => (head.amount * numBagsRec(rel(head.name))) + numBagsRec(tail)
+    @tailrec
+    def rec(idx: Int, stack: List[Content]): Int = stack match {
+      case Nil => idx
+      case head :: tail =>
+        val headContent = (1 to head.amount).flatMap(_ => rel(head.name)).toList
+        rec(idx + head.amount, headContent ++ tail)
     }
-    numBagsRec(rel(name)) - 1
+    rec(0, rel(name))
   }
 
   def eventuallyHoldsAtLeastOne(name: String): Int = {
-    val queue = new mutable.Queue[String]()
-    val result = new ListBuffer[String]()
-
-    queue.addAll(isContainedIn(name))
-
-    while(queue.nonEmpty) {
-      val p = queue.dequeue()
-      result.addOne(p)
-      queue.addAll(isContainedIn(p))
+    @tailrec
+    def rec(seen: Set[String], queue: List[String]): Int = queue match {
+      case Nil => seen.size
+      case head :: tail => rec(seen ++ Set(head), isContainedIn(head) ++ tail)
     }
-    result.toSet.size
+    rec(Set.empty, isContainedIn(name))
   }
 
   // Find which bags the given bag is contained in
