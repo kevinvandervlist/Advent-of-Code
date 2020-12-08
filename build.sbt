@@ -2,7 +2,7 @@ javacOptions ++= Seq("-source", "1.11", "-target", "1.11", "-Xlint")
 
 lazy val commonSettings = Seq(
   organization := "nl.kevinvandervlist",
-  name := "aoc2020",
+  name := "Advent of Code",
   version := "0.1.0-SNAPSHOT",
   scalaVersion := "2.13.3",
   scalacOptions ++= Seq(
@@ -15,14 +15,14 @@ lazy val commonSettings = Seq(
     "-Xlint:deprecation"
   ),
   libraryDependencies ++= Seq(
-    "org.scalatest" %% "scalatest" % "3.2.2" % "test"
+    "org.scalatest" %% "scalatest" % "3.2.3" % "test"
   )
 )
 
-lazy val puzzles = (project in file("puzzles")).
+lazy val y2020 = (project in file("y2020")).
   settings(commonSettings: _*).
   settings(
-    name := "puzzles",
+    name := "y2020",
     libraryDependencies ++= Seq(
     ),
   )
