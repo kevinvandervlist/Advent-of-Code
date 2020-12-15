@@ -5,19 +5,21 @@ object MemoryGame {
     compute(in.trim().split(',').map(_.toInt), 2020)
 
   def two(in: String): Int =
-    compute(in.trim().split(',').map(_.toInt), 30000000)
+    compute(in.trim().split(',').map(_.toInt), 30_000_000)
 
   private def compute(init: Array[Int], roundLimit: Int): Int = {
-    val cur = Array.fill(roundLimit)(0)
-    val prev = Array.fill(roundLimit)(0)
+    // Arrays are initialized with 0 by spec
+    val cur: Array[Int] = new Array[Int](roundLimit)
+    val prev: Array[Int] = new Array[Int](roundLimit)
     var round: Int = 1
     var lastNumberSpoken: Int = 0
-    for(n <- init) {
-      lastNumberSpoken = n
-      cur(n) = round
+    // setup
+    while(round <= init.length) {
+      lastNumberSpoken = init(round - 1)
+      cur(lastNumberSpoken) = round
       round += 1
     }
-    while(true) {
+    while(round <= roundLimit) {
       if(prev(lastNumberSpoken) > 0) {
         // seen before
         lastNumberSpoken = cur(lastNumberSpoken) - prev(lastNumberSpoken)
@@ -30,11 +32,8 @@ object MemoryGame {
       prev(lastNumberSpoken) = cur(lastNumberSpoken)
       cur(lastNumberSpoken) = round
 
-      if(round == roundLimit) {
-        return lastNumberSpoken
-      }
       round += 1
     }
-    ???
+    lastNumberSpoken
   }
 }
