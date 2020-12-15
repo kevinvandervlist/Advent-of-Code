@@ -9,7 +9,7 @@ trait AoCSpec extends AnyWordSpec with Matchers {
 
   /** A reference to the resource name with input of this challenge */
   def resource: String =
-    s"day-${getClass.getPackageName.takeRight(2)}-input"
+    s"day-${getClass.getPackage.getName.takeRight(2)}-input"
 
   /** The resource as lines */
   def inputAsLines: List[String] =

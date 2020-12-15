@@ -27,7 +27,6 @@ class NaughtyNiceSpec extends AoCSpec {
     NaughtyNice.two(example2.split('\n').toList) shouldBe 2
 
   override def assignmentPartTwo(): Any = {
-    NaughtyNice.twox(inputAsLines) foreach println
     NaughtyNice.two(inputAsLines) should not be 66
     NaughtyNice.two(inputAsLines) shouldBe 69
   }

@@ -8,11 +8,6 @@ object NaughtyNice {
   def two(in: List[String]): Int = in
     .map(StrTwo)
     .count(_.isNice)
-
-  def twox(in: List[String]): List[String] = in
-    .map(StrTwo)
-    .filter(_.isNice)
-    .map(_.input)
 }
 
 private case class StrOne(input: String) {

@@ -66,7 +66,7 @@ object RainRisk {
       traverseWaypoint(heading, boatPos, updatedWaypoint, tail)
   }
 
-  private def rotationMatrixFor(head: H): List[List[Int]] = head match {
+  private def rotationMatrixFor(head: H): List[List[Int]] = (head: @unchecked) match {
     case L(90) => List(
       List(0, -1),
       List(1, 0)

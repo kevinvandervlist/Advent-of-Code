@@ -10,7 +10,7 @@ object TaxiCab {
     uniqueTraverse(North, (0 -> 0), parseInstructions(in), Set(0 -> 0))
 
   private def parseInstructions(str: String): List[Instruction] =
-    str.split(Array(' ', ',')).toList.filterNot(_.isBlank).map(s => {
+    str.split(Array(' ', ',')).toList.filterNot(_.isEmpty).map(s => {
       s.head match {
         case 'L' => L(s.tail.toInt)
         case 'R' => R(s.tail.toInt)
