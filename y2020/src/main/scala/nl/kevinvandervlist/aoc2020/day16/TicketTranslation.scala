@@ -29,7 +29,7 @@ object TicketTranslation {
       for(r <- rules) {
         maybeApplicable = true
         for(t <- tickets) {
-          if(! t.validate(i, r)) {
+          if(! t.validateRuleForField(i, r)) {
             maybeApplicable = false
           }
         }
@@ -39,30 +39,31 @@ object TicketTranslation {
       }
     }
 
-    // Now reduce it such that each position has one rule that's applicable
-    def resolve(chosen: List[Map[Int, Rule]], maybe: Map[Int, List[Rule]]): List[Map[Int, Rule]] = {
-      if (maybe.isEmpty) {
-        return chosen
-      }
-      // Find the choice with least amount of options to limit complexity
-      val choice = maybe.keys.toList.minBy(k => maybe(k).size)
-      val remainder = maybe - choice
-      val options = maybe(choice).map(r => {
-        val _remainder = remainder.map {
-          case (x, remainingRules) => x -> remainingRules.filterNot(_ == r)
-        }
-        if(_remainder.exists(_._2.isEmpty)) {
-          return List.empty
-        } else {
-          resolve(chosen.map(c => c + (choice -> r)), _remainder)
-        }
-      })
-      options.flatten
-    }
-
-    val resolved = resolve(List(Map.empty), maybe.toMap)
-    resolved.head.map {
+    resolve(Map.empty, maybe.toMap).head.map {
       case (k, v) => k -> v.name
+    }
+  }
+
+  // Reduce rule alternatives such that each position has one rule that's applicable
+  private def resolve(chosen: Map[Int, Rule], maybe: Map[Int, List[Rule]]): Option[Map[Int, Rule]] = {
+    if (maybe.isEmpty) {
+      return Some(chosen)
+    }
+    // Find the choice with least amount of options to limit recursion complexity
+    val choice = maybe.keys.minBy(k => maybe(k).size)
+    val remainder = maybe - choice
+    maybe(choice).iterator.map(r => {
+      val updatedRemainder = remainder.map {
+        case (x, remainingRules) => x -> remainingRules.filterNot(_ == r)
+      }
+      // There remains a field that does not have valid options anymore
+      if(updatedRemainder.exists(_._2.isEmpty)) {
+        return None
+      } else {
+        resolve(chosen + (choice -> r), updatedRemainder)
+      }
+    }).collectFirst {
+      case Some(x) => x
     }
   }
 
@@ -84,7 +85,7 @@ object TicketTranslation {
     // Jump to my ticket
     idx += 2
     tickets.addOne(Ticket(
-      in(idx).split(',').map(_.toInt).toList
+      in(idx).split(',').map(_.toInt).toVector
     ))
 
     // Jump to other tickets
@@ -92,7 +93,7 @@ object TicketTranslation {
 
     while(idx < in.size) {
       tickets.addOne(Ticket(
-        in(idx).split(',').map(_.toInt).toList
+        in(idx).split(',').map(_.toInt).toVector
       ))
       idx += 1
     }
@@ -110,14 +111,13 @@ private case class Rule(name: String, fst: (Int, Int), snd: (Int, Int)) {
     boundary._1 <= n && n <= boundary._2
 }
 
-private case class Ticket(numbers: List[Int]) {
+private case class Ticket(numbers: Vector[Int]) {
   def isValid(rules: List[Rule]): Boolean =
     numbers.forall(n => rules.exists(_.isValid(n)))
 
-  def errorRate(rules: List[Rule]): Int = {
+  def errorRate(rules: List[Rule]): Int =
     numbers.filter(n => ! rules.exists(_.isValid(n))).sum
-  }
 
-  def validate(pos: Int, rule: Rule): Boolean =
+  def validateRuleForField(pos: Int, rule: Rule): Boolean =
     rule.isValid(numbers(pos))
 }

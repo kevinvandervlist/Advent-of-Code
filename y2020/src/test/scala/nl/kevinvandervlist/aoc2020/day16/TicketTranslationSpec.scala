@@ -38,7 +38,7 @@ class TicketTranslationSpec extends AoCSpec {
   override def assignmentPartOne(): Any =
     TicketTranslation.one(inputAsLines) shouldBe 29759
 
-  override def examplePartTwo(): Any = 
+  override def examplePartTwo(): Any =
     TicketTranslation.two(example2.split('\n').toList) shouldBe 1716
 
   override def assignmentPartTwo(): Any =
