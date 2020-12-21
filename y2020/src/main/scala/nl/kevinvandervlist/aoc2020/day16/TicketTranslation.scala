@@ -1,5 +1,7 @@
 package nl.kevinvandervlist.aoc2020.day16
 
+import nl.kevinvandervlist.aoc.Resolver
+
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
@@ -39,31 +41,8 @@ object TicketTranslation {
       }
     }
 
-    resolve(Map.empty, maybe.toMap).head.map {
+    Resolver.solve[Int, Rule](maybe.toMap).head.map {
       case (k, v) => k -> v.name
-    }
-  }
-
-  // Reduce rule alternatives such that each position has one rule that's applicable
-  private def resolve(chosen: Map[Int, Rule], maybe: Map[Int, List[Rule]]): Option[Map[Int, Rule]] = {
-    if (maybe.isEmpty) {
-      return Some(chosen)
-    }
-    // Find the choice with least amount of options to limit recursion complexity
-    val choice = maybe.keys.minBy(k => maybe(k).size)
-    val remainder = maybe - choice
-    maybe(choice).iterator.map(r => {
-      val updatedRemainder = remainder.map {
-        case (x, remainingRules) => x -> remainingRules.filterNot(_ == r)
-      }
-      // There remains a field that does not have valid options anymore
-      if(updatedRemainder.exists(_._2.isEmpty)) {
-        return None
-      } else {
-        resolve(chosen + (choice -> r), updatedRemainder)
-      }
-    }).collectFirst {
-      case Some(x) => x
     }
   }
 
