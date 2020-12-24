@@ -2,16 +2,17 @@ package nl.kevinvandervlist.aoc2020.day24
 
 import scala.annotation.tailrec
 
-object X {
-  def one(in: List[String]): Int =
-    seed(in)
-     .values
-      .count(identity)
+object LobbyLayout {
+  def one(in: List[String]): Int = seed(in)
+    .values
+    .count(identity)
 
   def two(in: List[String]): Int = (1 to 100)
-    .foldLeft(infiniteNeighbours(seed(in))) {
+    .foldLeft(blackOnly(seed(in).iterator).toMap) {
       case (floor, _) => nextDay(floor)
-    }.values.count(identity)
+    }
+    .values
+    .count(identity)
 
   // black is true
   private def seed(in: List[String]): Map[(Int, Int), Boolean] = in
@@ -38,15 +39,6 @@ object X {
     rec(t.toList, 0, 0)
   }
 
-  private def nextDay(floor: Map[(Int, Int), Boolean]): Map[(Int, Int), Boolean] = {
-    val updatedFloor = floor.map {
-      case (pos, isBlack) if isBlack && (blackNeighbours(floor, pos) == 0 || blackNeighbours(floor, pos) > 2) => pos -> false
-      case (pos, isBlack) if ! isBlack && blackNeighbours(floor, pos) == 2 => pos -> true
-      case (pos, isBlack) => pos -> isBlack
-    }
-    infiniteNeighbours(updatedFloor)
-  }
-
   private def neighbours(pos: (Int, Int)): List[(Int, Int)] = pos match {
     case (x, y) => List(
       (x + 1) -> y,
@@ -60,16 +52,25 @@ object X {
 
   private def blackNeighbours(floor: Map[(Int, Int), Boolean], pos: (Int, Int)): Int = {
     neighbours(pos)
+      .iterator
       .map(floor.getOrElse(_, false))
       .count(identity)
   }
 
-  // a bit hacky, just eagerly fill the whole map with white tiles...
-  private def infiniteNeighbours(floor: Map[(Int, Int), Boolean]): Map[(Int, Int), Boolean] = {
-    val newNeighbours = floor
-      .keys
-      .flatMap(neighbours)
-      .filterNot(floor.contains)
-    floor ++ newNeighbours.map(c => c -> false)
-  }
+  private def blackOnly(floor: Iterator[((Int, Int), Boolean)]): Iterator[((Int, Int), Boolean)] =
+    floor.filter(_._2)
+
+  private def nextDay(blacks: Map[(Int, Int), Boolean]): Map[(Int, Int), Boolean] = blacks
+    .iterator
+    .flatMap {
+      case (pos, _) => neighbours(pos)
+    }
+    .map(coordinate => coordinate -> blacks.getOrElse(coordinate, false))
+    .map {
+      case (pos, isBlack) if isBlack && (blackNeighbours(blacks, pos) == 0 || blackNeighbours(blacks, pos) > 2) => pos -> false
+      case (pos, isBlack) if ! isBlack && blackNeighbours(blacks, pos) == 2 => pos -> true
+      case (pos, isBlack) => pos -> isBlack
+    }
+    .filter(_._2)
+    .toMap
 }
