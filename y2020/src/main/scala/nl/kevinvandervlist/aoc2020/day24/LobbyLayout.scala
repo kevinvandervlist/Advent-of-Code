@@ -3,6 +3,9 @@ package nl.kevinvandervlist.aoc2020.day24
 import scala.annotation.tailrec
 
 object LobbyLayout {
+  private val Black = true
+  private val White = false
+
   def one(in: List[String]): Int = seed(in)
     .values
     .count(identity)
@@ -19,7 +22,7 @@ object LobbyLayout {
     .map(tileToCoords)
     .foldLeft(Map.empty[(Int, Int), Boolean]) {
       case (acc, t) if acc.contains(t) => acc + (t -> ! acc(t))
-      case (acc, t) => acc + (t -> true)
+      case (acc, t) => acc + (t -> Black)
     }
 
   private def tileToCoords(t: String): (Int, Int) = {
@@ -53,24 +56,28 @@ object LobbyLayout {
   private def blackNeighbours(floor: Map[(Int, Int), Boolean], pos: (Int, Int)): Int = {
     neighbours(pos)
       .iterator
-      .map(floor.getOrElse(_, false))
+      .map(floor.getOrElse(_, White))
       .count(identity)
   }
 
+  @inline
   private def blackOnly(floor: Iterator[((Int, Int), Boolean)]): Iterator[((Int, Int), Boolean)] =
     floor.filter(_._2)
 
-  private def nextDay(blacks: Map[(Int, Int), Boolean]): Map[(Int, Int), Boolean] = blacks
+  private def nextDay(blacks: Map[(Int, Int), Boolean]): Map[(Int, Int), Boolean] = blackOnly(blacks
     .iterator
     .flatMap {
       case (pos, _) => neighbours(pos)
     }
-    .map(coordinate => coordinate -> blacks.getOrElse(coordinate, false))
+    .map(coordinate => coordinate -> blacks.getOrElse(coordinate, White))
     .map {
-      case (pos, isBlack) if isBlack && (blackNeighbours(blacks, pos) == 0 || blackNeighbours(blacks, pos) > 2) => pos -> false
-      case (pos, isBlack) if ! isBlack && blackNeighbours(blacks, pos) == 2 => pos -> true
+      case (pos, isBlack) if isBlack => blackNeighbours(blacks, pos) match {
+        case 0 => pos -> White
+        case x if x > 2 => pos -> White
+        case _ => pos -> isBlack
+      }
+      case (pos, isBlack) if ! isBlack && blackNeighbours(blacks, pos) == 2 => pos -> Black
       case (pos, isBlack) => pos -> isBlack
     }
-    .filter(_._2)
-    .toMap
+  ).toMap
 }
