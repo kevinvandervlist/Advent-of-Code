@@ -114,6 +114,7 @@ private case object North extends Heading {
     case L(90) => West
     case L(180) => South
     case L(270) => East
+    case L(_) => throw new IllegalStateException("Unknown degree")
     case N(_) => North
     case E(_) => East
     case S(_) => South
@@ -126,6 +127,7 @@ private case object East extends Heading {
     case L(90) => North
     case L(180) => West
     case L(270) => South
+    case L(_) => throw new IllegalStateException("Unknown degree")
     case N(_) => North
     case E(_) => East
     case S(_) => South
@@ -139,6 +141,7 @@ private case object South extends Heading {
     case L(90) => East
     case L(180) => North
     case L(270) => West
+    case L(_) => throw new IllegalStateException("Unknown degree")
     case N(_) => North
     case E(_) => East
     case S(_) => South
@@ -152,6 +155,7 @@ private case object West extends Heading {
     case L(90) => South
     case L(180) => East
     case L(270) => North
+    case L(_) => throw new IllegalStateException("Unknown degree")
     case N(_) => North
     case E(_) => East
     case S(_) => South

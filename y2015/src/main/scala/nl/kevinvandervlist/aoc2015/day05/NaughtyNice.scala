@@ -2,11 +2,11 @@ package nl.kevinvandervlist.aoc2015.day05
 
 object NaughtyNice {
   def one(in: List[String]): Int = in
-    .map(StrOne)
+    .map(StrOne.apply)
     .count(_.isNice)
 
   def two(in: List[String]): Int = in
-    .map(StrTwo)
+    .map(StrTwo.apply)
     .count(_.isNice)
 }
 

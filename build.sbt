@@ -4,18 +4,18 @@ lazy val commonSettings = Seq(
   organization := "nl.kevinvandervlist",
   name := "Advent of Code",
   version := "0.1.0-SNAPSHOT",
-  scalaVersion := "2.13.3",
+  scalaVersion := "3.1.0",
   scalacOptions ++= Seq(
     "-feature",
     // "-Werror", disabled for now
     "-deprecation",
     "-unchecked",
-    "-Wdead-code",
-    "-Wunused:imports,patvars,privates,locals,imports,explicits,implicits,params,linted",
-    "-Xlint:deprecation"
+    //"-Wdead-code",
+    //"-Wunused:imports,patvars,privates,locals,implicits,params,linted",
+    //"-Xlint:deprecation"
   ),
   libraryDependencies ++= Seq(
-    "org.scalatest" %% "scalatest" % "3.2.3" % "test"
+    "org.scalatest" %% "scalatest" % "3.2.10" % "test"
   )
 )
 
@@ -71,6 +71,14 @@ lazy val y2020 = (project in file("y2020")).
   settings(commonSettings: _*).
   settings(
     name := "y2020",
+    libraryDependencies ++= Seq(
+    ),
+  ).dependsOn(core % "compile->compile;test->test")
+
+lazy val y2021 = (project in file("y2021")).
+  settings(commonSettings: _*).
+  settings(
+    name := "y2021",
     libraryDependencies ++= Seq(
     ),
   ).dependsOn(core % "compile->compile;test->test")

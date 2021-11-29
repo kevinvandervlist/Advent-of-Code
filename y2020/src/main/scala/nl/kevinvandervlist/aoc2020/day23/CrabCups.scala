@@ -41,7 +41,6 @@ private case class Cups(values: Vector[Int]) {
   def answer: String = {
     val fstPos = values.indexOf(1)
     val rotated = nextRotation(values, fstPos)
-    println(rotated.take(5))
     rotated.tail.mkString
   }
 
