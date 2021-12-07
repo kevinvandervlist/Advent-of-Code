@@ -23,15 +23,13 @@ object WhaleTreachery {
       ._2
   }
 
-  private def calculateFuel(ints: Array[Int], target: Int): Long = {
-    var fuelCost = 0
-    ints.foreach(n => fuelCost += math.abs(target - n))
-    fuelCost
-  }
+  private def calculateFuel(ints: Array[Int], target: Int): Long = 
+    ints.foldLeft(0) {
+      case(total, n) => total + math.abs(target - n)
+    }
 
-  private def calculateStepTwoFuel(ints: Array[Int], target: Int, cache: Map[Int, Long]): Long = {
-    var fuelCost = 0L
-    ints.foreach(n => fuelCost += cache(math.abs(target - n)))
-    fuelCost
-  }
+  private def calculateStepTwoFuel(ints: Array[Int], target: Int, cache: Map[Int, Long]): Long =
+    ints.foldLeft(0L) {
+      case(total, n) => total + cache(math.abs(target - n))
+    }
 }
