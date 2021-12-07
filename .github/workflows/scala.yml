@@ -23,4 +23,4 @@ jobs:
         java-version: ${{ matrix.java }}
         distribution: 'adopt'
     - name: Run tests ${{ matrix.year }}
-      run: sbt ${{ matrix.year }}/test
+      run: sbt y${{ matrix.year }}/test
