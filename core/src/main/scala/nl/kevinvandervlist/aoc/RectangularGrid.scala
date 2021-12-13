@@ -1,27 +1,45 @@
 package nl.kevinvandervlist.aoc
 
-object SquareGrid {
-  def apply[T](in: Iterable[Iterable[T]]): SquareGrid[T] = {
-    new SquareGrid(in.map(_.toVector).toVector)
+object RectangularGrid {
+  def apply[T](in: Iterable[Iterable[T]]): RectangularGrid[T] = {
+    new RectangularGrid(in.map(_.toVector).toVector)
   }
-  def applyInnerArray[T](in: Iterable[Array[T]]): SquareGrid[T] = {
-    new SquareGrid(in.map(_.toVector).toVector)
+  def applyInnerArray[T](in: Iterable[Array[T]]): RectangularGrid[T] = {
+    new RectangularGrid(in.map(_.toVector).toVector)
+  }
+  def apply[T](xSize: Int, ySize: Int, default: T): RectangularGrid[T] = {
+    new RectangularGrid(Vector.fill(ySize)(Vector.fill(xSize)(default)))
   }
 }
 
-case class SquareGrid[T](elements: Vector[Vector[T]]) {
+case class RectangularGrid[T](elements: Vector[Vector[T]]) {
+  def print: String =
+    elements.map(_.map(_.toString).mkString("")).mkString("\n")
+
   def allCoordinates: Iterable[(Int, Int)] = for {
     y <- elements.indices
     x <- elements(y).indices
   } yield x -> y
 
+  def flipTop: RectangularGrid[T] =
+    copy(elements.reverse)
+
+  def transpose: RectangularGrid[T] =
+    copy(elements.transpose)
+
+  def flipLeft: RectangularGrid[T] =
+    copy(elements.transpose.reverse.transpose)
+
+  def count(p: T => Boolean): Long =
+    elements.flatten.count(p)
+
   def get(x: Int, y: Int): Option[T] =
     elements.lift(y).flatMap(_.lift(x))
 
-  def set(c: (Int, Int), f: T => T): SquareGrid[T] =
+  def set(c: (Int, Int), f: T => T): RectangularGrid[T] =
     set(c._1, c._2, f)
 
-  def set(x: Int, y: Int, f: T => T): SquareGrid[T] =
+  def set(x: Int, y: Int, f: T => T): RectangularGrid[T] =
     copy(elements.updated(y, elements(y).updated(x, f(elements(y)(x)))))
 
   def get(c: (Int, Int)): Option[T] =

@@ -1,17 +1,17 @@
 package nl.kevinvandervlist.aoc2021.day09
 
-import nl.kevinvandervlist.aoc.SquareGrid
+import nl.kevinvandervlist.aoc.RectangularGrid
 
 object SmokeBasin {
   def one(in: List[String]): Int = {
     val nums = in.map(_.toCharArray.map(_.toString.toInt))
-    val grid = SquareGrid.applyInnerArray(nums)
+    val grid = RectangularGrid.applyInnerArray(nums)
     getLowPoints(grid).map(grid.get).map(h => 1 + h.get).sum
   }
 
   def two(in: List[String]): Int = {
     val nums = in.map(_.toCharArray.map(_.toString.toInt))
-    val grid = SquareGrid.applyInnerArray(nums)
+    val grid = RectangularGrid.applyInnerArray(nums)
     val lowPoints = getLowPoints(grid)
     val basins = lowPoints
       .map(exploreBasin(grid, _))
@@ -24,7 +24,7 @@ object SmokeBasin {
       .product
   }
 
-  private def exploreBasin(grid: SquareGrid[Int], lowPoint: (Int, Int)): Set[(Int, Int)] = {
+  private def exploreBasin(grid: RectangularGrid[Int], lowPoint: (Int, Int)): Set[(Int, Int)] = {
     // A basin should only contain unique elements, and we fill it by just exploring the map
     // according to the given criteria
     var basin = Set.empty[(Int, Int)]
@@ -48,7 +48,7 @@ object SmokeBasin {
     basin
   }
 
-  private def getLowPoints(grid: SquareGrid[Int]): Iterable[(Int, Int)] = grid.allCoordinates.filter {
+  private def getLowPoints(grid: RectangularGrid[Int]): Iterable[(Int, Int)] = grid.allCoordinates.filter {
     case (x, y) =>
       val neighbouringCoordinates = grid
         .getSquaredNeighbouringCoordinates(x, y)

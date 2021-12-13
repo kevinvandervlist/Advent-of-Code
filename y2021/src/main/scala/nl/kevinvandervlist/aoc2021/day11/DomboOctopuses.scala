@@ -1,11 +1,11 @@
 package nl.kevinvandervlist.aoc2021.day11
 
-import nl.kevinvandervlist.aoc.SquareGrid
+import nl.kevinvandervlist.aoc.RectangularGrid
 
 object DomboOctopuses {
   def one(in: List[String]): Int = {
     val nums = in.map(_.toCharArray.map(_.toString.toInt))
-    val grid = SquareGrid.applyInnerArray(nums)
+    val grid = RectangularGrid.applyInnerArray(nums)
     val res = (1 to 100).foldLeft(grid -> 0) {
       case ((g, c), _) => step(g, c)
     }
@@ -13,7 +13,7 @@ object DomboOctopuses {
   }
   def two(in: List[String]): Int = {
     val nums = in.map(_.toCharArray.map(_.toString.toInt))
-    var grid = SquareGrid.applyInnerArray(nums)
+    var grid = RectangularGrid.applyInnerArray(nums)
     var cnt = 0
     while(true) {
       cnt += 1
@@ -26,7 +26,7 @@ object DomboOctopuses {
     throw new IllegalStateException("Should terminate")
   }
 
-  private def step(grid: SquareGrid[Int], flashes: Int): (SquareGrid[Int], Int) = {
+  private def step(grid: RectangularGrid[Int], flashes: Int): (RectangularGrid[Int], Int) = {
     var updatedGrid = grid
     // all +1
     grid.allCoordinates.foreach {
