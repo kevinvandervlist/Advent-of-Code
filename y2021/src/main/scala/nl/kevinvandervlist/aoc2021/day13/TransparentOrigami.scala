@@ -1,12 +1,12 @@
 package nl.kevinvandervlist.aoc2021.day13
 
-import nl.kevinvandervlist.aoc.RectangularGrid
+import nl.kevinvandervlist.aoc.{Characters, RectangularGrid}
 
 object TransparentOrigami {
   def one(in: List[String]): Int = {
     val fold = foldInstructions(in).head
     val g = foldPaper(grid(in), fold)
-    g.count(_ == '#').toInt
+    g.count(_ == Characters.SQUARE).toInt
   }
 
   def two(in: List[String]): String = {
@@ -37,8 +37,8 @@ object TransparentOrigami {
 
     val xMax = coords.map(_._1).max + 1 // starts at 0
     val yMax = coords.map(_._2).max + 1
-    coords.foldLeft(RectangularGrid.apply(xMax, yMax, '.')) {
-      case (g, (x, y)) => g.set(x, y, c => '#')
+    coords.foldLeft(RectangularGrid.apply(xMax, yMax, Characters.EMPTY)) {
+      case (g, (x, y)) => g.set(x, y, c => Characters.SQUARE)
     }
   }
 
@@ -88,8 +88,8 @@ object TransparentOrigami {
   private def foldResult(smallest: RectangularGrid[Char], largest: RectangularGrid[Char]): RectangularGrid[Char] =
     smallest
       .allCoordinates
-      .collect { case c if smallest.get(c).contains('#') => c }
+      .collect { case c if smallest.get(c).contains(Characters.SQUARE) => c }
       .foldLeft(largest) {
-        case (p, c) => p.set(c, o => '#')
+        case (p, c) => p.set(c, o => Characters.SQUARE)
       }
 }
