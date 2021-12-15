@@ -120,24 +120,15 @@ case class RectangularGrid[T](elements: Vector[Vector[T]]) {
 
   // Thanks wikipedia
   def aStar(start: Point, target: Point, heuristic: Point => Int = p => 1, weight: T => Int): List[Point] = {
-    var cameFrom = Map.empty[Point, Point]
-    var gScore = Map(start -> 0) // cost of cheapest path from start to currently known
+    var cameFrom = mutable.Map.empty[Point, Point]
+    var gScore = mutable.Map(start -> 0) // cost of cheapest path from start to currently known
     // For node n, fScore[n] := gScore[n] + h(n). fScore[n] represents our current best guess as to
     // how short a path from start to finish can be if it goes through n.
-    var fScore = Map(start -> heuristic(start))
+    var fScore = mutable.Map(start -> heuristic(start))
 
-    // todo: priority queue
-//    val open = mutable.PriorityQueue.empty[Point](
-//      Ordering.by(fScore.getOrElse(_, Int.MaxValue))
-//    )
-//    open.addOne(start)
     val open = mutable.Set(start)
     while(open.nonEmpty) {
-      var current = open
-        .map(p => p -> fScore.getOrElse(p, Int.MaxValue))
-        .minBy(_._2)
-        ._1
-      //var current = open.head
+      var current = open.minBy(fScore.getOrElse(_, Int.MaxValue))
 
       // have we found a path?
       if(current == target) {
@@ -150,7 +141,6 @@ case class RectangularGrid[T](elements: Vector[Vector[T]]) {
       }
 
       // Otherwise continue exploration
-      //open.dequeue()
       open.remove(current)
       getSquaredNeighbouringCoordinates(current) foreach { nb =>
         val tentative = gScore.get(current)
@@ -158,15 +148,16 @@ case class RectangularGrid[T](elements: Vector[Vector[T]]) {
           .getOrElse(Int.MaxValue)
         if(tentative < gScore.getOrElse(nb, Int.MaxValue)) {
           // improvement found
-          cameFrom = cameFrom + (nb -> current)
-          gScore = gScore + (nb -> tentative)
-          fScore = fScore + (nb -> (tentative + heuristic(nb)))
+          cameFrom.addOne(nb, current)
+          gScore.addOne(nb, tentative)
+          fScore.addOne(nb, tentative + heuristic(nb))
           if(! open.contains(nb)) {
             open.addOne(nb)
           }
         }
       }
     }
+
     List.empty
   }
 }
