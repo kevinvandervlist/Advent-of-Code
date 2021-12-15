@@ -1,5 +1,7 @@
 package nl.kevinvandervlist.aoc
 
+import scala.collection.mutable
+
 object RectangularGrid {
   def apply[T](in: Iterable[Iterable[T]]): RectangularGrid[T] = {
     new RectangularGrid(in.map(_.toVector).toVector)
@@ -10,16 +12,28 @@ object RectangularGrid {
   def apply[T](xSize: Int, ySize: Int, default: T): RectangularGrid[T] = {
     new RectangularGrid(Vector.fill(ySize)(Vector.fill(xSize)(default)))
   }
+  def fromSingleDigitGrid(in: List[String]): RectangularGrid[Int] =
+    RectangularGrid.applyInnerArray(
+      in.map(_.toCharArray.map(_.toString.toInt))
+    )
 }
+
+case class Point(val x: Int, val y: Int)
 
 case class RectangularGrid[T](elements: Vector[Vector[T]]) {
   def print: String =
     elements.map(_.map(_.toString).mkString("")).mkString("\n")
 
-  def allCoordinates: Iterable[(Int, Int)] = for {
+  def width: Int =
+    elements.head.length
+
+  def height: Int =
+    elements.length
+
+  def allCoordinates: Iterable[Point] = for {
     y <- elements.indices
     x <- elements(y).indices
-  } yield x -> y
+  } yield Point(x, y)
 
   def flipTop: RectangularGrid[T] =
     copy(elements.reverse)
@@ -36,19 +50,19 @@ case class RectangularGrid[T](elements: Vector[Vector[T]]) {
   def get(x: Int, y: Int): Option[T] =
     elements.lift(y).flatMap(_.lift(x))
 
-  def set(c: (Int, Int), f: T => T): RectangularGrid[T] =
+  def set(c: Point, f: T => T): RectangularGrid[T] =
     set(c._1, c._2, f)
 
   def set(x: Int, y: Int, f: T => T): RectangularGrid[T] =
     copy(elements.updated(y, elements(y).updated(x, f(elements(y)(x)))))
 
-  def get(c: (Int, Int)): Option[T] =
+  def get(c: Point): Option[T] =
     get(c._1, c._2)
 
-  def getSquaredNeighbouringCoordinates(c: (Int, Int)): Iterable[(Int, Int)] =
+  def getSquaredNeighbouringCoordinates(c: Point): Iterable[Point] =
     getSquaredNeighbouringCoordinates(c._1, c._2)
 
-  def getSquaredNeighbouringCoordinates(x: Int, y: Int): Iterable[(Int, Int)] = List(
+  def getSquaredNeighbouringCoordinates(x: Int, y: Int): Iterable[Point] = List(
     top(x, y),
     right(x, y),
     bottom(x, y),
@@ -57,10 +71,10 @@ case class RectangularGrid[T](elements: Vector[Vector[T]]) {
     case Some(x) => x
   }
 
-  def getSquaredDiagonalNeighbouringCoordinates(c: (Int, Int)): Iterable[(Int, Int)] =
+  def getSquaredDiagonalNeighbouringCoordinates(c: Point): Iterable[Point] =
     getSquaredDiagonalNeighbouringCoordinates(c._1, c._2)
 
-  def getSquaredDiagonalNeighbouringCoordinates(x: Int, y: Int): Iterable[(Int, Int)] = List(
+  def getSquaredDiagonalNeighbouringCoordinates(x: Int, y: Int): Iterable[Point] = List(
     topleft(x, y),
     top(x, y),
     topright(x, y),
@@ -73,34 +87,86 @@ case class RectangularGrid[T](elements: Vector[Vector[T]]) {
     case Some(x) => x
   }
 
-  private def guardedCoordinate(predicate: => Boolean, fn: => (Int, Int)): Option[(Int, Int)] =
+  private def guardedCoordinate(predicate: => Boolean, fn: => Point): Option[Point] =
     if(predicate) {
       Some(fn)
     } else {
       None
     }
 
-  def topleft(x: Int, y: Int): Option[(Int, Int)] =
-    guardedCoordinate(x > 0 && y > 0, (x - 1) -> (y - 1))
+  def topleft(x: Int, y: Int): Option[Point] =
+    guardedCoordinate(x > 0 && y > 0, Point(x - 1, y - 1))
 
-  def top(x: Int, y: Int): Option[(Int, Int)] =
-    guardedCoordinate(y > 0, x -> (y - 1))
+  def top(x: Int, y: Int): Option[Point] =
+    guardedCoordinate(y > 0, Point(x, y - 1))
 
-  def topright(x: Int, y: Int): Option[(Int, Int)] =
-    guardedCoordinate(x < (elements.head.length - 1) && y > 0, (x + 1) -> (y - 1))
+  def topright(x: Int, y: Int): Option[Point] =
+    guardedCoordinate(x < (elements.head.length - 1) && y > 0, Point(x + 1, y - 1))
 
-  def right(x: Int, y: Int): Option[(Int, Int)] =
-    guardedCoordinate(x < (elements.head.length - 1), (x + 1) -> y)
+  def right(x: Int, y: Int): Option[Point] =
+    guardedCoordinate(x < (elements.head.length - 1), Point(x + 1, y))
 
-  def bottomright(x: Int, y: Int): Option[(Int, Int)] =
-    guardedCoordinate((x < (elements.head.length - 1)) && y < (elements.length - 1), (x + 1) -> (y + 1))
+  def bottomright(x: Int, y: Int): Option[Point] =
+    guardedCoordinate((x < (elements.head.length - 1)) && y < (elements.length - 1), Point(x + 1, y + 1))
 
-  def bottom(x: Int, y: Int): Option[(Int, Int)] =
-    guardedCoordinate(y < (elements.length - 1), x -> (y + 1))
+  def bottom(x: Int, y: Int): Option[Point] =
+    guardedCoordinate(y < (elements.length - 1), Point(x, y + 1))
 
-  def left(x: Int, y: Int): Option[(Int, Int)] =
-    guardedCoordinate(x > 0, (x - 1) -> y)
+  def left(x: Int, y: Int): Option[Point] =
+    guardedCoordinate(x > 0, Point(x - 1, y))
 
-  def bottomleft(x: Int, y: Int): Option[(Int, Int)] =
-    guardedCoordinate((x > 0) && (y < (elements.length - 1)), (x - 1) -> (y + 1))
+  def bottomleft(x: Int, y: Int): Option[Point] =
+    guardedCoordinate((x > 0) && (y < (elements.length - 1)), Point(x - 1, y + 1))
+
+  // Thanks wikipedia
+  def aStar(start: Point, target: Point, heuristic: Point => Int = p => 1, weight: T => Int): List[Point] = {
+    var cameFrom = Map.empty[Point, Point]
+    var gScore = Map(start -> 0) // cost of cheapest path from start to currently known
+    // For node n, fScore[n] := gScore[n] + h(n). fScore[n] represents our current best guess as to
+    // how short a path from start to finish can be if it goes through n.
+    var fScore = Map(start -> heuristic(start))
+
+    // todo: priority queue
+//    val open = mutable.PriorityQueue.empty[Point](
+//      Ordering.by(fScore.getOrElse(_, Int.MaxValue))
+//    )
+//    open.addOne(start)
+    val open = mutable.Set(start)
+    while(open.nonEmpty) {
+      var current = open
+        .map(p => p -> fScore.getOrElse(p, Int.MaxValue))
+        .minBy(_._2)
+        ._1
+      //var current = open.head
+
+      // have we found a path?
+      if(current == target) {
+        var path = List(current)
+        while(cameFrom.contains(current)) {
+          current = cameFrom(current)
+          path = current :: path
+        }
+        return path
+      }
+
+      // Otherwise continue exploration
+      //open.dequeue()
+      open.remove(current)
+      getSquaredNeighbouringCoordinates(current) foreach { nb =>
+        val tentative = gScore.get(current)
+          .flatMap(g => get(current).map(c => weight(c) + g))
+          .getOrElse(Int.MaxValue)
+        if(tentative < gScore.getOrElse(nb, Int.MaxValue)) {
+          // improvement found
+          cameFrom = cameFrom + (nb -> current)
+          gScore = gScore + (nb -> tentative)
+          fScore = fScore + (nb -> (tentative + heuristic(nb)))
+          if(! open.contains(nb)) {
+            open.addOne(nb)
+          }
+        }
+      }
+    }
+    List.empty
+  }
 }

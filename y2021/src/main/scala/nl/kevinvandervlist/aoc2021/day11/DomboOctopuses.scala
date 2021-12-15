@@ -1,6 +1,6 @@
 package nl.kevinvandervlist.aoc2021.day11
 
-import nl.kevinvandervlist.aoc.RectangularGrid
+import nl.kevinvandervlist.aoc.{Point, RectangularGrid}
 
 object DomboOctopuses {
   def one(in: List[String]): Int = {
@@ -29,12 +29,10 @@ object DomboOctopuses {
   private def step(grid: RectangularGrid[Int], flashes: Int): (RectangularGrid[Int], Int) = {
     var updatedGrid = grid
     // all +1
-    grid.allCoordinates.foreach {
-      case (x, y) =>
-        updatedGrid = updatedGrid.set(x, y, n => n + 1)
-    }
+    grid.allCoordinates.foreach(point =>
+      updatedGrid = updatedGrid.set(point, n => n + 1))
     // check who flashes
-    var toFlash: List[(Int, Int)] = updatedGrid
+    var toFlash: List[Point] = updatedGrid
       .allCoordinates
       .filter(c => updatedGrid.get(c).get > 9)
       .toList
@@ -57,9 +55,9 @@ object DomboOctopuses {
       .allCoordinates
       .filter(c => updatedGrid.get(c).get > 9)
       .foreach {
-        case (x, y) =>
+        point =>
           flashCount += 1
-          updatedGrid = updatedGrid.set(x, y, n => 0)
+          updatedGrid = updatedGrid.set(point, n => 0)
       }
 
     updatedGrid -> flashCount

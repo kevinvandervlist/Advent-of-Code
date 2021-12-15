@@ -1,6 +1,6 @@
 package nl.kevinvandervlist.aoc2021.day09
 
-import nl.kevinvandervlist.aoc.RectangularGrid
+import nl.kevinvandervlist.aoc.{Point, RectangularGrid}
 
 object SmokeBasin {
   def one(in: List[String]): Int = {
@@ -24,10 +24,10 @@ object SmokeBasin {
       .product
   }
 
-  private def exploreBasin(grid: RectangularGrid[Int], lowPoint: (Int, Int)): Set[(Int, Int)] = {
+  private def exploreBasin(grid: RectangularGrid[Int], lowPoint: Point): Set[Point] = {
     // A basin should only contain unique elements, and we fill it by just exploring the map
     // according to the given criteria
-    var basin = Set.empty[(Int, Int)]
+    var basin = Set.empty[Point]
     var stack = List(lowPoint)
     while(stack.nonEmpty) {
       basin = basin + stack.head
@@ -48,8 +48,8 @@ object SmokeBasin {
     basin
   }
 
-  private def getLowPoints(grid: RectangularGrid[Int]): Iterable[(Int, Int)] = grid.allCoordinates.filter {
-    case (x, y) =>
+  private def getLowPoints(grid: RectangularGrid[Int]): Iterable[Point] = grid.allCoordinates.filter {
+    case Point(x, y) =>
       val neighbouringCoordinates = grid
         .getSquaredNeighbouringCoordinates(x, y)
         .map(grid.get)
