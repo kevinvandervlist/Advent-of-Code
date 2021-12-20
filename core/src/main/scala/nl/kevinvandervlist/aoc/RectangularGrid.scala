@@ -1,5 +1,6 @@
 package nl.kevinvandervlist.aoc
 
+import nl.kevinvandervlist.aoc.Point
 import scala.collection.mutable
 
 object RectangularGrid {
@@ -17,8 +18,6 @@ object RectangularGrid {
       in.map(_.toCharArray.map(_.toString.toInt))
     )
 }
-
-case class Point(val x: Int, val y: Int)
 
 case class RectangularGrid[T](elements: Vector[Vector[T]]) {
   def print: String =
@@ -47,15 +46,15 @@ case class RectangularGrid[T](elements: Vector[Vector[T]]) {
   def count(p: T => Boolean): Long =
     elements.flatten.count(p)
 
-  def get(x: Int, y: Int): Option[T] =
-    elements.lift(y).flatMap(_.lift(x))
-
   def set(c: Point, f: T => T): RectangularGrid[T] =
     set(c._1, c._2, f)
 
   def set(x: Int, y: Int, f: T => T): RectangularGrid[T] =
     copy(elements.updated(y, elements(y).updated(x, f(elements(y)(x)))))
 
+  def get(x: Int, y: Int): Option[T] =
+    elements.lift(y).flatMap(_.lift(x))
+      
   def get(c: Point): Option[T] =
     get(c._1, c._2)
 
@@ -101,22 +100,22 @@ case class RectangularGrid[T](elements: Vector[Vector[T]]) {
     guardedCoordinate(y > 0, Point(x, y - 1))
 
   def topright(x: Int, y: Int): Option[Point] =
-    guardedCoordinate(x < (elements.head.length - 1) && y > 0, Point(x + 1, y - 1))
+    guardedCoordinate(x < (width - 1) && y > 0, Point(x + 1, y - 1))
 
   def right(x: Int, y: Int): Option[Point] =
-    guardedCoordinate(x < (elements.head.length - 1), Point(x + 1, y))
+    guardedCoordinate(x < (width - 1), Point(x + 1, y))
 
   def bottomright(x: Int, y: Int): Option[Point] =
-    guardedCoordinate((x < (elements.head.length - 1)) && y < (elements.length - 1), Point(x + 1, y + 1))
+    guardedCoordinate((x < (width - 1)) && y < (height - 1), Point(x + 1, y + 1))
 
   def bottom(x: Int, y: Int): Option[Point] =
-    guardedCoordinate(y < (elements.length - 1), Point(x, y + 1))
+    guardedCoordinate(y < (height - 1), Point(x, y + 1))
 
   def left(x: Int, y: Int): Option[Point] =
     guardedCoordinate(x > 0, Point(x - 1, y))
 
   def bottomleft(x: Int, y: Int): Option[Point] =
-    guardedCoordinate((x > 0) && (y < (elements.length - 1)), Point(x - 1, y + 1))
+    guardedCoordinate((x > 0) && (y < (height - 1)), Point(x - 1, y + 1))
 
   // Thanks wikipedia
   def aStar(start: Point, target: Point, heuristic: Point => Int = p => 1, weight: T => Int): List[Point] = {
