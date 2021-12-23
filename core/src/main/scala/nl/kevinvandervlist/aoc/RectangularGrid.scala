@@ -125,9 +125,13 @@ case class RectangularGrid[T](elements: Vector[Vector[T]]) {
     // how short a path from start to finish can be if it goes through n.
     var fScore = mutable.Map(start -> heuristic(start))
 
-    val open = mutable.Set(start)
-    while(open.nonEmpty) {
-      var current = open.minBy(fScore.getOrElse(_, Int.MaxValue))
+    val pq = mutable.PriorityQueue.empty[Point](
+      Ordering.by(fScore.getOrElse(_, Int.MaxValue)).reverse
+    )
+    pq.addOne(start)
+
+    while(pq.nonEmpty) {
+      var current = pq.dequeue()
 
       // have we found a path?
       if(current == target) {
@@ -140,7 +144,6 @@ case class RectangularGrid[T](elements: Vector[Vector[T]]) {
       }
 
       // Otherwise continue exploration
-      open.remove(current)
       getSquaredNeighbouringCoordinates(current) foreach { nb =>
         val tentative = gScore.get(current)
           .flatMap(g => get(current).map(c => weight(c) + g))
@@ -150,8 +153,8 @@ case class RectangularGrid[T](elements: Vector[Vector[T]]) {
           cameFrom.addOne(nb, current)
           gScore.addOne(nb, tentative)
           fScore.addOne(nb, tentative + heuristic(nb))
-          if(! open.contains(nb)) {
-            open.addOne(nb)
+          if(! pq.exists(_ == nb)) {
+            pq.addOne(nb)
           }
         }
       }
