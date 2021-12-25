@@ -17,6 +17,8 @@ object RectangularGrid {
     RectangularGrid.applyInnerArray(
       in.map(_.toCharArray.map(_.toString.toInt))
     )
+  def fromSingleCharGrid(in: List[String]): RectangularGrid[Char] =
+    RectangularGrid.applyInnerArray(in.map(_.toCharArray))
 }
 
 case class RectangularGrid[T](elements: Vector[Vector[T]]) {
